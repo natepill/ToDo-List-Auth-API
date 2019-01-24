@@ -16,7 +16,7 @@ var User = mongoose.model('User', {
     required: true,
     trim: true,
     minlength: 1,
-    unique: true,
+    unique: true, //No two users can have the same email
     validate: {
       validator: validator.isEmail,
       message: '{VALUE} is not a valid email'
