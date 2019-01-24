@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 // jwt.sign takes adds secret to token
 // jwt.verify makes sure that token's data wasnt changed
 
+//model vs instance methods?
 
 var data = {
     id: 10
