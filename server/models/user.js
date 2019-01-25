@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcrypt')
 
 var UserSchema = new mongoose.Schema({
   email: {
@@ -63,7 +64,7 @@ UserSchema.statics.findByToken = function (token) {
     }catch(e){
 
         return Promise.reject(); //we could pass in a value that would be used in our catch block in the controller
-        
+
         //return a Promise that is always going to reject
         //if this code runs, we don't want the following returning of findOne User
     }
@@ -76,6 +77,25 @@ UserSchema.statics.findByToken = function (token) {
         //qoutes are REQUIRED when using you have a '.' in the value
     });
 };
+
+// If you do NOT provide 'next' parameter and do not call it the middleware wont complete and program will crash
+UserSchema.pre('save', function(next) => {
+    var user = this
+
+    //We only want to hash when a user is created or password is modifying, otherwise we are hashing a hash
+    //isModified takes an individual property and returns Boolean value
+    if (user.isModified('password')){
+
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
+                user.password = hash;
+                next();
+            })
+        })
+    }else{
+        next();
+    }
+});
 
 
 
