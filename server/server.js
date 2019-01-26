@@ -136,7 +136,16 @@ app.post('/users/login', (req, res) => {
   }).catch((e) => {
       res.status(400).send();
   });
+});
 
+//Trying to delete the token off the currently logged in user
+app.delete('/users/me/token', authenticate, (req, res) => {
+    //dont need any data back, just need to know if it was deleted, thats why no data passed though the .then()
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send()
+    }, () => {
+        res.status(400).send()
+    })
 });
 
 

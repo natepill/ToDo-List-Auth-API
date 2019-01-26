@@ -102,6 +102,22 @@ UserSchema.statics.findByCredentials = function(email, password){
     })
 };
 
+//Delete token from user's token array that is equal to the token property we pass in
+User.methods.removeToken = function (token) {
+    //mongodb operator $pull: removes items from an array that match a criteria
+    var user = this;
+
+    //returning allows us to chain together the call we set up in sever.js
+    return user.update({
+        $pull: {
+            tokens: {
+                //We could use ES6 syntax --> tokens: {token}
+                token: token //if there is a match, the entire object will be removed (object id, access property, and the token property). One less Item in the array
+            }
+        }
+    })
+};
+
 // If you do NOT provide 'next' parameter and do not call it the middleware wont complete and program will crash
 UserSchema.pre('save', function(next){
     var user = this
