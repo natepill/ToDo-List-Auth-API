@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 
 var UserSchema = new mongoose.Schema({
   email: {
@@ -79,7 +79,7 @@ UserSchema.statics.findByToken = function (token) {
 };
 
 // If you do NOT provide 'next' parameter and do not call it the middleware wont complete and program will crash
-UserSchema.pre('save', function(next) => {
+UserSchema.pre('save', function(next){
     var user = this
 
     //We only want to hash when a user is created or password is modifying, otherwise we are hashing a hash
