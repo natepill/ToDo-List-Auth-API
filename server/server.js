@@ -118,6 +118,33 @@ app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);
 });
 
+
+
+//Dedicated Route for logging in users
+//req: {email, password} --> Need to find user with email and hashed password
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(body.email, body.password).then((user) => {
+      //Found user, now generate an auth token
+      //We return this result to continue the chain, if there is an error, the catch is triggered
+      return user.generateAuthToken().then((token) =>{
+          //respond with x-auth header along with token and send back user object
+          res.header('x-auth', token).send(user);
+      });
+
+  }).catch((e) => {
+      res.status(400).send();
+  });
+
+});
+
+
+
+
+
+
+
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
 });

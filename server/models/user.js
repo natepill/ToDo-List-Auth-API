@@ -78,6 +78,30 @@ UserSchema.statics.findByToken = function (token) {
     });
 };
 
+//Find a User by email and password
+UserSchema.statics.findByCredentials = function(email, password){
+    var User = this
+    //reminder that {email} is ES6 syntax, we can't have User.findOne(email) because the email is in an object
+    //Found user and verify password match
+    return User.findOne({email}).then((user) => {
+        if (!user){
+            //returning a rejected Promise will trigger the catch block upon function call
+            return Promise.reject()
+        }
+        //All bcyrpt methods only support callbacks NO PROMISES. In order to keep with convention of using Promises, we wrap our bycrypt call in a new Promise
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, function(err, res) => {
+                if(res){
+                    resolve(user);
+                }else{
+                    reject()
+                }
+            })
+        });
+
+    })
+};
+
 // If you do NOT provide 'next' parameter and do not call it the middleware wont complete and program will crash
 UserSchema.pre('save', function(next){
     var user = this
