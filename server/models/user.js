@@ -90,7 +90,7 @@ UserSchema.statics.findByCredentials = function(email, password){
         }
         //All bcyrpt methods only support callbacks NO PROMISES. In order to keep with convention of using Promises, we wrap our bycrypt call in a new Promise
         return new Promise((resolve, reject) => {
-            bcrypt.compare(password, user.password, function(err, res) => {
+            bcrypt.compare(password, user.password, function(err, res) {
                 if(res){
                     resolve(user);
                 }else{
@@ -103,7 +103,7 @@ UserSchema.statics.findByCredentials = function(email, password){
 };
 
 //Delete token from user's token array that is equal to the token property we pass in
-User.methods.removeToken = function (token) {
+UserSchema.methods.removeToken = function (token) {
     //mongodb operator $pull: removes items from an array that match a criteria
     var user = this;
 
